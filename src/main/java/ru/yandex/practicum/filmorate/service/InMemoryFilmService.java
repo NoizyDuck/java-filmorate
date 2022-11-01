@@ -9,10 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 @Component
 public class InMemoryFilmService implements FilmService {
-private int id = 0;
-private final Map<Integer, Film> films = new HashMap<>();
+    private int id = 0;
+    private final Map<Integer, Film> films = new HashMap<>();
 
 
     @Override
@@ -22,9 +23,9 @@ private final Map<Integer, Film> films = new HashMap<>();
 
     @Override
     public Film createFilm(Film film) {
-    film.setId(getNextId());
-       films.put(film.getId(), film);
-       return film;
+        film.setId(incrementAndGet());
+        films.put(film.getId(), film);
+        return film;
     }
 
     @Override
@@ -35,7 +36,8 @@ private final Map<Integer, Film> films = new HashMap<>();
         films.put(film.getId(), film);
         return film;
     }
-    private int getNextId() {
+
+    private int incrementAndGet() {
         return ++id;
     }
 }

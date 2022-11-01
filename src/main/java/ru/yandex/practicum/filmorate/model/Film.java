@@ -1,12 +1,11 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
-import lombok.NonNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
-import java.time.Duration;
 import java.time.LocalDate;
+
 @Data
 public class Film {
     int id;
@@ -15,8 +14,10 @@ public class Film {
     @NotBlank
     @Size(max = 200)
     String description;
+    @NotBlank
     @DateTimeFormat(pattern = "YYYY-mm-dd")
     LocalDate releaseDate;
+    @NotBlank
     @Positive //(message = "Duration should be positive")
     int duration;
 }

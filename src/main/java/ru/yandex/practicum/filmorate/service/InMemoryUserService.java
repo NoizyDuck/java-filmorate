@@ -25,7 +25,7 @@ public class InMemoryUserService implements UserService {
     public User createUser(User user) {
         String name = user.getName() == null || user.getName().isBlank() ? user.getLogin() : user.getName();
         user.setName(name);
-        user.setId(getNextId());
+        user.setId(incrementAndGet());
         users.put(user.getId(), user);
         return user;
     }
@@ -40,7 +40,7 @@ public class InMemoryUserService implements UserService {
     }
 
 
-    private int getNextId() {
+    private int incrementAndGet() {
         return ++id;
     }
 }
