@@ -16,7 +16,7 @@ public class User {
     //  @NotEmpty (message = "Name should be not empty")
     //  @Size(min = 2, max = 20) //, message = "Name should be between 2 and 20 characters")
     String name;
-    @NotBlank
+    @NotNull
     @PastOrPresent //(message = "birthday date should be not from future")
     @DateTimeFormat(pattern = "YYYY-mm-dd")
     LocalDate birthday;

@@ -14,10 +14,9 @@ public class Film {
     @NotBlank
     @Size(max = 200)
     String description;
-    @NotBlank
     @DateTimeFormat(pattern = "YYYY-mm-dd")
+    @NotNull
     LocalDate releaseDate;
-    @NotBlank
     @Positive //(message = "Duration should be positive")
     int duration;
 }
