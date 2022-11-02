@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.exceptions;
+package ru.yandex.practicum.filmorate.model.exceptions;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
