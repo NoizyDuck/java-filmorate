@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.Set;
 
 @Data
 public class User {
@@ -19,5 +20,6 @@ public class User {
     @PastOrPresent(message = "birthday date should be not from future")
     @DateTimeFormat(pattern = "YYYY-mm-dd")
     LocalDate birthday;
+    Set<Integer> friends;
 
 }

@@ -1,10 +1,9 @@
-package ru.yandex.practicum.filmorate.service.implementation;
+package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class InMemoryFilmService implements FilmService {
+public class InMemoryFilmStorage implements FilmStorage {
     private int id = 0;
     private final Map<Integer, Film> films = new HashMap<>();
 
