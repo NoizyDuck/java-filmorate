@@ -18,20 +18,21 @@ public class UserService {
         this.userStorage = userStorage;
     }
 
-    public void addFriend (int id, Integer friendId){
-       User user = userStorage.
+    public void addFriend (int userId, Integer friendId){
+       User user = userStorage.getUserById(userId);
+       User friendUser = userStorage.getUserById(friendId);
+       user.getFriends().add(friendId);
+       friendUser.getFriends().add(userId);
 }
-
-public void deleteFriend(Long id){
-    if (!friends.contains(id)){
-        friends.remove(id);
-        System.out.println("Friend " + id + " deleted from friends list :'(");
-    } else {
-        System.out.println("No such friend on friends list");
+    public void removeFriend(int userId, Integer friendId){
+        User user = userStorage.getUserById(userId);
+        user.getFriends().remove(friendId);
     }
-}
-public Set<Long> showAllFriends(){
-    return this.friends;
+
+
+public Set<Integer> showAllFriends(int userId){
+    User user = userStorage.getUserById(userId);
+   return user.getFriends();
 }
 
 

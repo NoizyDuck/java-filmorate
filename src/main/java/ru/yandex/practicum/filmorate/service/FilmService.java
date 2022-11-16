@@ -21,11 +21,11 @@ private Set<Long> likes;
     public void deleteLike(Long id){
 
     }
-    public Set<Long> showTopTenFilms(){
-        return posts.stream()
-                .filter(p -> email.equals(p.getAuthor()))
-                .sorted((p0, p1) -> compare(p0, p1, sort))
-                .limit(size)
-                .collect(Collectors.toList());
-    }
+//    public Set<Long> showTopTenFilms(){
+//        return posts.stream()
+//                .filter(p -> email.equals(p.getAuthor()))
+//                .sorted((p0, p1) -> compare(p0, p1, sort))
+//                .limit(size)
+//                .collect(Collectors.toList());
+//    }
 }

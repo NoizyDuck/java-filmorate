@@ -25,22 +25,27 @@ public class InMemoryUserStorage implements UserStorage {
     public User createUser(User user) {
         String name = user.getName() == null || user.getName().isBlank() ? user.getLogin() : user.getName();
         user.setName(name);
-        user.setId(incrementAndGet());
-        users.put(user.getId(), user);
+        user.setUserId(incrementAndGet());
+        users.put(user.getUserId(), user);
         return user;
     }
 
     @Override
     public User updateUser(User user) {
-        if (!users.containsKey(user.getId())) {
+        if (!users.containsKey(user.getUserId())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        users.put(user.getId(), user);
+        users.put(user.getUserId(), user);
         return user;
     }
 
     @Override
     public User getUserById(int userId) {
+        return users.get(userId);
+    }
+
+    @Override
+    public List<User> getFriendsList(int userId) {
         return null;
     }
 
