@@ -3,12 +3,14 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
+import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
@@ -37,8 +39,20 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
+    @Override
+    public Film getFilmById(int id) {
+        Film film = films.get(id);
+        if(film == null){
+            throw new FilmNotFoundException("Film not found");
+        } else{
+        return film;
+    }
+    }
+
     private int incrementAndGet() {
         return ++id;
     }
+
+
 }
 

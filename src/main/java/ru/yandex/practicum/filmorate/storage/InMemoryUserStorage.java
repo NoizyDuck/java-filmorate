@@ -5,10 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
@@ -25,28 +22,27 @@ public class InMemoryUserStorage implements UserStorage {
     public User createUser(User user) {
         String name = user.getName() == null || user.getName().isBlank() ? user.getLogin() : user.getName();
         user.setName(name);
-        user.setUserId(incrementAndGet());
-        users.put(user.getUserId(), user);
+        user.setId(incrementAndGet());
+        users.put(user.getId(), user);
         return user;
     }
 
     @Override
     public User updateUser(User user) {
-        if (!users.containsKey(user.getUserId())) {
+        if (!users.containsKey(user.getId())) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        users.put(user.getUserId(), user);
+        users.put(user.getId(), user);
         return user;
     }
 
     @Override
     public User getUserById(int userId) {
+     //   User user = users.get(userId);
+        if (!users.containsKey(userId)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         return users.get(userId);
-    }
-
-    @Override
-    public List<User> getFriendsList(int userId) {
-        return null;
     }
 
 

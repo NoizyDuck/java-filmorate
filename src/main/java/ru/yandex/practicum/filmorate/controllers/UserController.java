@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -16,7 +15,7 @@ import java.util.List;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
-    private final UserStorage userStorage;
+    private final ru.yandex.practicum.filmorate.storage.UserStorage userStorage;
     private final UserService userService;
 
     @PostMapping
@@ -47,6 +46,15 @@ public class UserController {
     }
     @GetMapping ("/{id}/friends")
     public List<User> findAllFriends (@PathVariable("id") int userId){
-        return null;
+        return userService.getUserFriendsList(userId);
+    }
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriendList(@PathVariable("id") int userId, @PathVariable("otherId") int otherId){
+        return userService.getCommonFriendsList(userId, otherId);
+    }
+
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable("id") int id){
+      return userStorage.getUserById(id);
     }
 }
