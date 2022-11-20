@@ -24,7 +24,6 @@ public class FilmController {
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
             throw new IllegalArgumentException("Date should not be before 1985-12-28");
         }
-        ;
         log.info("Film created" + film);
         return filmStorage.createFilm(film);
     }
@@ -47,9 +46,6 @@ public class FilmController {
 
         @DeleteMapping("/{id}/like/{userId}")
         public void deleteLike (@PathVariable("id") int id, @PathVariable("userId") int userId){
-//        if(userId < 0){
-//            throw new IllegalArgumentException("userId");
-//        }
             filmService.deleteLike(id, userId);
         }
 

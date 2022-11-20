@@ -38,7 +38,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUserById(int userId) {
-     //   User user = users.get(userId);
         if (!users.containsKey(userId)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }

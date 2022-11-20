@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 @Service
 public class FilmService {
     FilmComparator filmComparator = new FilmComparator();
-    //TODO дописать
     final FilmStorage filmStorage;
     final UserStorage userStorage;
 
@@ -55,10 +54,4 @@ public class FilmService {
                 .limit(count)
                 .collect(Collectors.toList());
     }
-
-
-//    private int compare(Film f0, Film f1){
-//       int result = f0.getLikeCount().compareTo(f1.getLikeCount());
-//        return result;
-//    }
 }

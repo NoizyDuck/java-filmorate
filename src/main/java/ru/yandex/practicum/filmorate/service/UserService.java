@@ -18,49 +18,39 @@ public class UserService {
     }
 
     public void addFriend (int userId, Integer friendId){
-       User user = userStorage.getUserById(userId);
-        if(user == null){
-            throw new UserNotFoundException("User not found");
-        }
-       User friendUser = userStorage.getUserById(friendId);
-        if(friendUser == null){
-            throw new UserNotFoundException("User not found");
-        }
-       user.getFriends().add(friendId);
+        User user = validateAndGetUser(userId);
+        User friendUser = validateAndGetUser(friendId);
+        user.getFriends().add(friendId);
        friendUser.getFriends().add(userId);
 }
     public void removeFriend(int userId, Integer friendId){
-        User user = userStorage.getUserById(userId);
-        if(user == null){
-            throw new UserNotFoundException("User not found");
-        }
+        User user = validateAndGetUser(userId);
         user.getFriends().remove(friendId);
-        User friendUser = userStorage.getUserById(friendId);
-        if(friendUser == null){
-            throw new UserNotFoundException("User not found");
-        }
+        User friendUser = validateAndGetUser(friendId);
         friendUser.getFriends().remove(friendId);
     }
 
 
 public List<User> getUserFriendsList(int userId){
-        User user = userStorage.getUserById(userId);
-    if(user == null){
-        throw new UserNotFoundException("User not found");
-    }
+    User user = validateAndGetUser(userId);
     return user.getFriends().stream().map(userStorage::getUserById).collect(Collectors.toList());
 }
 
 
     public List<User> getCommonFriendsList(int userId, int otherId) {
-        User user = userStorage.getUserById(userId);
-        if(user == null){
-            throw new UserNotFoundException("User not found");
-        }
+        User user = validateAndGetUser(userId);
         User otherUser = userStorage.getUserById(otherId);
         return user.getFriends().stream()
                 .filter(friendId -> otherUser.getFriends().contains(friendId))
                 .map(userStorage::getUserById)
                 .collect(Collectors.toList());
+    }
+
+    private User validateAndGetUser(int userId) {
+        User user = userStorage.getUserById(userId);
+        if(user == null){
+            throw new UserNotFoundException("User not found");
+        }
+        return user;
     }
 }
