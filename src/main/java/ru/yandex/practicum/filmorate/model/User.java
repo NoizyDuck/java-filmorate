@@ -22,5 +22,6 @@ public class User {
     @DateTimeFormat(pattern = "YYYY-mm-dd")
     LocalDate birthday;
     Set<Integer> friends = new HashSet<>();
+    String friendshipStatus;
 
 }

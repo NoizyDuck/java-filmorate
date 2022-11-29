@@ -24,6 +24,8 @@ public class Film {
     LocalDate releaseDate;
     @Positive(message = "Duration should be positive")
     int duration;
+    String genre;
+    String rating;
     Set<Integer> likes =new HashSet<>();
     int likeCount = 0;
 }
