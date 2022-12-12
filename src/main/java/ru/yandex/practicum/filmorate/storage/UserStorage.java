@@ -6,12 +6,17 @@ import java.util.List;
 import java.util.Set;
 
 public interface UserStorage {
-    List<User> getAllUsers();
 
     User createUser(User user);
-
+    User getUserById(long userId);
     User updateUser(User user);
 
-    User getUserById(int userId);
+    boolean deleteUser(User user); //  надо ли?
+    User deleteUserById (Long id);
+
+
+    List<User> getAllUsers();
+
+
 
 }

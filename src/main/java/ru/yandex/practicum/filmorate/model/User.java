@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Data
 public class User {
-    int id;
+    long id;
     @Email(message = "email should be valid")
     String email;
     @NotBlank(message = "login should be not empty or contains empty spaces")
