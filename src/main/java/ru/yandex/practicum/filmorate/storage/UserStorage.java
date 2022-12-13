@@ -11,7 +11,7 @@ public interface UserStorage {
     User getUserById(long userId);
     User updateUser(User user);
 
-    boolean deleteUser(User user); //  надо ли?
+    void deleteUser(User user);
     User deleteUserById (Long id);
 
 

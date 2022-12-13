@@ -52,6 +52,16 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
+    public void deleteUser(User user) {
+
+    }
+
+    @Override
+    public User deleteUserById(Long id) {
+        return null;
+    }
+
+    @Override
     public User getUserById(long userId) {
         return null;
     }
