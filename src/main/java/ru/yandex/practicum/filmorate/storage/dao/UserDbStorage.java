@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Component("UserDbStorage")
 @RequiredArgsConstructor
@@ -75,6 +76,19 @@ public class UserDbStorage implements UserStorage {
     }
     @Override
     public User getUserById(long id) {
+//        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT USER_ID, EMAIL, LOGIN, BIRTHDAY, USER_NAME FROM USERS WHERE USER_ID = ?", id);
+//        if (userRows.next()) {
+//            User user = new User(
+//                    userRows.getInt("USER_ID"),
+//                    userRows.getString("EMAIL"),
+//                    userRows.getString("LOGIN"),
+//                    userRows.getDate("BIRTHDAY"),
+//                    userRows.getString("USER_NAME"));
+//            return user;
+//        } else {
+//            return null;
+//        }
+//    }
         final String sqlQuery = "SELECT USER_ID, EMAIL, LOGIN, BIRTHDAY, USER_NAME FROM USERS WHERE USER_ID = ?";
         User user;
         try {
@@ -102,7 +116,7 @@ public class UserDbStorage implements UserStorage {
     }
 
     private User makeUser(ResultSet rs) throws SQLException {
-        int userId = rs.getInt("USER_ID");
+        long userId = rs.getLong("USER_ID");
         return new User(
                 userId,
                 rs.getString("EMAIL"),
@@ -112,7 +126,7 @@ public class UserDbStorage implements UserStorage {
                 getUserFriends(userId));
     }
 
-    private List<Integer> getUserFriends(int userId) {
+    private List<Integer> getUserFriends(long userId) {
         String sqlGetFriends = "SELECT FRIEND_ID FROM FRIENDSHIP WHERE USER_ID = ?";
         return jdbcTemplate.queryForList(sqlGetFriends, Integer.class, userId);
     }
