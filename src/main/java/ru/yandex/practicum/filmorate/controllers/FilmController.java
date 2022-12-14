@@ -16,7 +16,6 @@ import java.util.List;
 @RequestMapping("/films")
 @RequiredArgsConstructor
 public class FilmController {
-    private final FilmStorage filmStorage;
     private final FilmService filmService;
 
 
@@ -27,18 +26,18 @@ public class FilmController {
             throw new IllegalArgumentException("Date should not be before 1985-12-28");
         }
         log.info("Film created" + film);
-        return filmStorage.createFilm(film);
+        return filmService.createFilm(film);
     }
 
     @PutMapping
     public Film put(@Valid @RequestBody Film film) {
         log.info("Film updated" + film);
-        return filmStorage.updateFilm(film);
+        return filmService.updateFilm(film);
     }
 
     @GetMapping
     public List<Film> getFilmList() {
-        return filmStorage.getAllFilms();
+        return filmService.getAllFilms();
     }
 
     @PutMapping("/{id}/like/{userId}")
@@ -61,7 +60,7 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public Film getFilmById (@PathVariable("id") int id){
-       return filmStorage.getFilmById(id);
+       return filmService.getFilmById(id);
     }
 
 }

@@ -1,27 +1,37 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Data;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor()
+@NoArgsConstructor
+@Valid
 public class User {
+
     long id;
     @Email(message = "email should be valid")
     String email;
+    @NotNull
     @NotBlank(message = "login should be not empty or contains empty spaces")
     String login;
- //   @Size(min = 2, max = 20, message = "Name should be between 2 and 20 characters")
     String name;
     @NotNull
     @PastOrPresent(message = "birthday date should be not from future")
     @DateTimeFormat(pattern = "YYYY-mm-dd")
     LocalDate birthday;
     Set<Integer> friends = new HashSet<>();
-    String friendshipStatus;
+   // String friendshipStatus;
 
+
+    public User(int userId, String email, String login, String user_name, LocalDate birthday, List<Integer> userFriends) {
+    }
 }

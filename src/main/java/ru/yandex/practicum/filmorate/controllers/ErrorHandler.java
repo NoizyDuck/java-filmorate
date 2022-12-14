@@ -12,7 +12,7 @@ import ru.yandex.practicum.filmorate.exceptions.*;
 public class ErrorHandler {
 
 
-    @ExceptionHandler({FilmNotFoundException.class, UserNotFoundException.class})
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFound(final ObjectNotFoundException e) {
         log.info("404 {}", e.getMessage());

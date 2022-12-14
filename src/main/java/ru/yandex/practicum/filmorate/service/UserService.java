@@ -1,34 +1,36 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserService {
 
-    final ru.yandex.practicum.filmorate.storage.UserStorage userStorage;
+    final UserStorage userStorage;
     @Autowired
-    public UserService(ru.yandex.practicum.filmorate.storage.UserStorage userStorage){
+    public UserService(UserStorage userStorage){
         this.userStorage = userStorage;
     }
 
+    public User createUser(User user){
+        return userStorage.createUser(user);
+    }
+
     public void addFriend (int userId, Integer friendId){
-        User user = validateAndGetUser(userId);
-        User friendUser = validateAndGetUser(friendId);
-        user.getFriends().add(friendId);
-       friendUser.getFriends().add(userId);
+        userStorage.addFriend(userId, friendId);
 }
     public void removeFriend(int userId, Integer friendId){
-        User user = validateAndGetUser(userId);
-        user.getFriends().remove(friendId);
-        User friendUser = validateAndGetUser(friendId);
-        friendUser.getFriends().remove(friendId);
+        userStorage.deleteFriend(userId,friendId);
     }
 
 
@@ -55,4 +57,15 @@ public List<User> getUserFriendsList(int userId){
         return user;
     }
 
+    public Collection<User> getAllUsers() {
+        return userStorage.getAllUsers();
+    }
+
+    public User updateUser(User user) {
+        return userStorage.updateUser(user);
+    }
+
+    public User getUserById(int id) {
+        return userStorage.getUserById(id);
+    }
 }

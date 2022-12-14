@@ -2,8 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exceptions.FilmNotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -28,7 +27,7 @@ public class FilmService {
     public void addLike(int filmId, int userId) {
         Film film = filmStorage.getFilmById(filmId);
         if (film == null) {
-            throw new FilmNotFoundException("Film not found");
+            throw new ObjectNotFoundException("Film not found");
         }
         film.setLikeCount(film.getLikeCount() + 1);
         film.getLikes().add(userId);
@@ -37,11 +36,11 @@ public class FilmService {
     public void deleteLike(int filmId, int userId) {
         Film film = filmStorage.getFilmById(filmId);
         if (film == null) {
-            throw new FilmNotFoundException("Film not found");
+            throw new ObjectNotFoundException("Film not found");
         }
         User user = userStorage.getUserById(userId);
         if (user == null) {
-            throw new UserNotFoundException("User not found");
+            throw new ObjectNotFoundException("User not found");
         }
         film.setLikeCount(film.getLikeCount() - 1);
         film.getLikes().remove(userId);
@@ -53,5 +52,21 @@ public class FilmService {
                 .sorted((f0, f1) -> filmComparator.compare(f0, f1))
                 .limit(count)
                 .collect(Collectors.toList());
+    }
+
+    public Film createFilm(Film film) {
+        return filmStorage.createFilm(film);
+    }
+
+    public Film updateFilm(Film film) {
+        return filmStorage.updateFilm(film);
+    }
+
+    public List<Film> getAllFilms() {
+        return filmStorage.getAllFilms();
+    }
+
+    public Film getFilmById(int id) {
+        return filmStorage.getFilmById(id);
     }
 }
