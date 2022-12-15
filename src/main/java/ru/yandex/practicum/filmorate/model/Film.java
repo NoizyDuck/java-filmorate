@@ -9,7 +9,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -18,19 +20,22 @@ import java.util.Set;
 @NoArgsConstructor
 @Valid
 public class Film {
-    int id;
+    private int id;
     @NotBlank(message = "Film name should be not empty")
-    String name;
+    private String name;
     @NotBlank(message = "Description should be not empty")
     @Size(max = 200, message = "Description should be not longer then 200 charts")
-    String description;
+    private String description;
     @DateTimeFormat(pattern = "YYYY-mm-dd")
     @NotNull(message = "Release date should be not empty")
-    LocalDate releaseDate;
+    private LocalDate releaseDate;
     @Positive(message = "Duration should be positive")
-    int duration;
-    String genre;
-    String rating;
-    Set<Integer> likes =new HashSet<>();
+    private int duration;
+    private int rate;
+    @NotNull
+    private Mpa mpa;
+    private List<Genre> genres = new ArrayList<>();
+    private List<Integer> likes = new ArrayList<>();
+
     int likeCount = 0;
 }

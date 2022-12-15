@@ -68,6 +68,16 @@ public class UserDbStorage implements UserStorage {
     }
 
     @Override
+    public boolean deleteUser(User user) {
+        return false;
+    }
+
+    @Override
+    public User deleteUserById(Long id) {
+        return null;
+    }
+
+    @Override
     public User updateUser(User user) {
         final String sqlQuery = "UPDATE USERS SET EMAIL = ?, LOGIN = ?, USER_NAME = ?, BIRTHDAY = ? " +
                 "WHERE USER_ID = ?";
