@@ -16,8 +16,8 @@ import java.util.Set;
 
 @Getter
 @Setter
-@AllArgsConstructor()
-@NoArgsConstructor
+@AllArgsConstructor
+//@NoArgsConstructor
 @Valid
 public class Film {
     private int id;
@@ -37,5 +37,8 @@ public class Film {
     private List<Genre> genres = new ArrayList<>();
     private List<Integer> likes = new ArrayList<>();
 
-    int likeCount = 0;
+   int likeCount = 0;
+
+   public Film(int filmId, String film_name, String description, LocalDate release_date, int duration, int rating, int rating_id, Mpa mpa, List<Genre> filmGenres, Object filmLikes) {
+    }
 }

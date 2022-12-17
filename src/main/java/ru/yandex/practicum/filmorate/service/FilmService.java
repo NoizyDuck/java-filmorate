@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
@@ -9,10 +10,10 @@ import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Service
+@Slf4j
 public class FilmService {
     FilmComparator filmComparator = new FilmComparator();
     final FilmStorage filmStorage;
@@ -45,14 +46,16 @@ public class FilmService {
         film.setLikeCount(film.getLikeCount() - 1);
         film.getLikes().remove(userId);
     }
-
     public List<Film> getTopFilms(int count) {
-        return filmStorage.getAllFilms()
-                .stream()
-                .sorted((f0, f1) -> filmComparator.compare(f0, f1))
-                .limit(count)
-                .collect(Collectors.toList());
+        return filmStorage.getTopFilms(count);
     }
+//    public List<Film> getTopFilms(int count) {
+//        return filmStorage.getAllFilms()
+//                .stream()
+//                .sorted((f0, f1) -> filmComparator.compare(f0, f1))
+//                .limit(count)
+//                .collect(Collectors.toList());
+//    }
 
     public Film createFilm(Film film) {
         return filmStorage.createFilm(film);

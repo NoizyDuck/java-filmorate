@@ -21,7 +21,7 @@ public class FilmController {
 
 
     @PostMapping
-    public Film create(@Valid @RequestBody Film film) {
+    public Film createFilm(@Valid @RequestBody Film film) {
         if (film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
             throw new IllegalArgumentException("Date should not be before 1985-12-28");
         }
@@ -30,13 +30,13 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film put(@Valid @RequestBody Film film) {
+    public Film updateFilm(@Valid @RequestBody Film film) {
         log.info("Film updated" + film);
         return filmService.updateFilm(film);
     }
 
     @GetMapping
-    public List<Film> getFilmList() {
+    public List<Film> getAllFilms() {
         return filmService.getAllFilms();
     }
 

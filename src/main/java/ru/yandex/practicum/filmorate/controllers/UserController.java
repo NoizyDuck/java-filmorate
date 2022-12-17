@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User put(@RequestBody @Valid User user) {
+    public User update(@RequestBody @Valid User user) {
         log.info("User updated" + user);
         return userService.updateUser(user);
     }
@@ -56,8 +56,4 @@ public class UserController {
     public User getUserById(@PathVariable("id") int id){
         return userService.getUserById(id);
     }
-//    @GetMapping("/{id}")
-//    public User getUserById(@PathVariable("id") int id){
-//      return userService.getUserById(id);
-//    }
 }

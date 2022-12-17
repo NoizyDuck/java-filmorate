@@ -14,7 +14,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-@AllArgsConstructor()
+@AllArgsConstructor
 @NoArgsConstructor
 @Valid
 public class User {
@@ -31,7 +31,6 @@ public class User {
     @DateTimeFormat(pattern = "YYYY-mm-dd")
     LocalDate birthday;
     List<Integer> friends = new ArrayList<>();
-  //  String friendshipStatus;
 
 
 

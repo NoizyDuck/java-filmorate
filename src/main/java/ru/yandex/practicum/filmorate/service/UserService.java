@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.UserNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -16,28 +17,30 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserService {
 
-    final UserStorage userStorage;
+    private final UserStorage userStorage;
+
     @Autowired
-    public UserService(UserStorage userStorage){
+    public UserService(UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
-    public User createUser(User user){
+    public User createUser(User user) {
         return userStorage.createUser(user);
     }
 
-    public void addFriend (int userId, Integer friendId){
+    public void addFriend(int userId, Integer friendId) {
         userStorage.addFriend(userId, friendId);
-}
-    public void removeFriend(int userId, Integer friendId){
-        userStorage.deleteFriend(userId,friendId);
+    }
+
+    public void removeFriend(int userId, Integer friendId) {
+        userStorage.deleteFriend(userId, friendId);
     }
 
 
-public List<User> getUserFriendsList(int userId){
-    User user = validateAndGetUser(userId);
-    return user.getFriends().stream().map(userStorage::getUserById).collect(Collectors.toList());
-}
+    public List<User> getUserFriendsList(int userId) {
+        User user = validateAndGetUser(userId);
+        return user.getFriends().stream().map(userStorage::getUserById).collect(Collectors.toList());
+    }
 
 
     public List<User> getCommonFriendsList(int userId, int otherId) {
@@ -51,7 +54,7 @@ public List<User> getUserFriendsList(int userId){
 
     private User validateAndGetUser(int userId) {
         User user = userStorage.getUserById(userId);
-        if(user == null){
+        if (user == null) {
             throw new ObjectNotFoundException("User not found");
         }
         return user;
@@ -62,10 +65,18 @@ public List<User> getUserFriendsList(int userId){
     }
 
     public User updateUser(User user) {
-        return userStorage.updateUser(user);
+        User userToUpdate = userStorage.updateUser(user);
+        if (user == null) {
+            throw new ObjectNotFoundException("User " + userToUpdate + " not found");
+        }
+        return user;
     }
 
     public User getUserById(int id) {
-        return userStorage.getUserById(id);
+        User user = userStorage.getUserById(id);
+        if (user == null) {
+            throw new ObjectNotFoundException("User with id" + id + " not found");
+        }
+        return user;
     }
 }

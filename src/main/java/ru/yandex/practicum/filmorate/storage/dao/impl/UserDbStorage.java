@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.dao;
+package ru.yandex.practicum.filmorate.storage.dao.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -16,13 +16,14 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
-@Component("UserDbStorage")
+
+@Component
 @RequiredArgsConstructor
 public class UserDbStorage implements UserStorage {
 
-   private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+
     @Override
     public Collection<User> getAllUsers() {
         String sqlQuery = "SELECT * FROM USERS";
@@ -50,31 +51,21 @@ public class UserDbStorage implements UserStorage {
     public User createUser(User user) {
         String sqlQuery = "insert into USERS (EMAIL, LOGIN, USER_NAME, BIRTHDAY) values (?,?,?,?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(connection ->{
+        jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"USER_ID"});
             stmt.setString(1, user.getEmail());
             stmt.setString(2, user.getLogin());
             stmt.setString(3, user.getName());
             final LocalDate birthday = user.getBirthday();
-            if (birthday == null){
+            if (birthday == null) {
                 stmt.setNull(4, Types.DATE);
             } else {
                 stmt.setDate(4, Date.valueOf(birthday));
             }
             return stmt;
-        },keyHolder);
+        }, keyHolder);
         user.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
         return user;
-    }
-
-    @Override
-    public boolean deleteUser(User user) {
-        return false;
-    }
-
-    @Override
-    public User deleteUserById(Long id) {
-        return null;
     }
 
     @Override
@@ -84,6 +75,7 @@ public class UserDbStorage implements UserStorage {
         jdbcTemplate.update(sqlQuery, user.getEmail(), user.getLogin(), user.getName(), user.getBirthday(), user.getId());
         return getUserById(user.getId());
     }
+
     @Override
     public User getUserById(long id) {
 //        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT USER_ID, EMAIL, LOGIN, BIRTHDAY, USER_NAME FROM USERS WHERE USER_ID = ?", id);
@@ -114,15 +106,9 @@ public class UserDbStorage implements UserStorage {
 //    return jdbcTemplate.queryForObject(sqlQuery,(rs, rowNum) -> makeUser(rs), id);
 //}
 
-    @Override
-    public User deleteUserById(long id) {
-        return null;
-    }
+
     @Override
     public void deleteFriend(Integer userId, Integer friendId) {
-    }
-    @Override
-    public void deleteUser(User user) {
     }
 
     private User makeUser(ResultSet rs) throws SQLException {
@@ -140,7 +126,6 @@ public class UserDbStorage implements UserStorage {
         String sqlGetFriends = "SELECT FRIEND_ID FROM FRIENDSHIP WHERE USER_ID = ?";
         return jdbcTemplate.queryForList(sqlGetFriends, Integer.class, userId);
     }
-
 
 
 }
