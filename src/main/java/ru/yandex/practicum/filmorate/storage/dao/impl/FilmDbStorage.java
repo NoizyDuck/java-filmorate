@@ -29,7 +29,8 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public List<Film> getAllFilms() {
-        String sqlQuery = "SELECT * FROM FILMS";
+        String sqlQuery = "SELECT * FROM FILMS " +
+                "INNER JOIN RATING_MPA ON FILMS.RATING_ID = RATING_MPA.RATING_ID ";
         return jdbcTemplate.query(sqlQuery, (rs, rowNum) -> makeFilm(rs));
     }
 
@@ -72,9 +73,9 @@ public class FilmDbStorage implements FilmStorage {
                 Objects.requireNonNull(resultSet.getDate("FILMS.RELEASE_DATE")).toLocalDate(),
                 resultSet.getInt("FILMS.DURATION"),
                 resultSet.getInt("FILMS.RATE"),
-                new Mpa(resultSet.getInt("RATING_MPA.RATING_ID"),
-                        resultSet.getString("RATING_MPA.MPA_NAME"),
-                        resultSet.getString("RATING_MPA.DESCRIPTION")),
+                new Mpa(resultSet.getInt("RATING_ID"),
+                        resultSet.getString("MPA_NAME"),
+                        resultSet.getString("DESCRIPTION")),
                 (List<Genre>) genreService.getFilmGenres(filmId),
                 getFilmLikes(filmId)
         );

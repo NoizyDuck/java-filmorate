@@ -25,7 +25,16 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        userNameValidation(user);
+
         return userStorage.createUser(user);
+    }
+
+    private User userNameValidation(User user) {
+        if (user.getName().isEmpty()){
+            user.setName(user.getLogin());
+        }
+        return user;
     }
 
     public void addFriend(int userId, Integer friendId) {
@@ -47,7 +56,8 @@ public class UserService {
 
     public List<User> getCommonFriendsList(int userId, int otherId) {
         User user = validateAndGetUser(userId);
-        User otherUser = userStorage.getUserById(otherId);
+        User otherUser = validateAndGetUser(otherId);
+
         return user.getFriends().stream()
                 .filter(friendId -> otherUser.getFriends().contains(friendId))
                 .map(userStorage::getUserById)
@@ -59,6 +69,9 @@ public class UserService {
         if (user == null) {
             throw new ObjectNotFoundException("User not found");
         }
+//        if (user.getName().isEmpty()){
+//        user.setName(user.getLogin());
+//    }
         return user;
     }
 

@@ -5,6 +5,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.dao.GenreStorage;
 
@@ -41,7 +42,7 @@ public class GenreDbStorage implements GenreStorage {
         try {
             genre = jdbcTemplate.queryForObject(sqlQuery, this::makeGenre, genreId);
         } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException(String.format("Genre id " + genreId + " not found"));
+            throw new ObjectNotFoundException(String.format("Genre id " + genreId + " not found"));
         }
         return genre;
     }

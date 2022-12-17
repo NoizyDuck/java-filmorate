@@ -20,16 +20,8 @@ public class GenreService {
         return genreStorage.getGenresByFilmId(filmId);
     }
 
-    public Genre getGenreById(String strId) {
-        int id = parseId(strId);
+    public Genre getGenreById(Integer id) {
         return genreStorage.getGenreById(id);
-    }
-    private Integer parseId(final String strId) {
-        try {
-            return Integer.valueOf(strId);
-        } catch (NumberFormatException exception) {
-            return Integer.MIN_VALUE;
-        }
     }
 
     public void addFilmGenres(int filmId, Collection<Genre> genres) {
