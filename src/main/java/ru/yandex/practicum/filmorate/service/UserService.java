@@ -29,7 +29,9 @@ public class UserService {
     }
 
     public void addFriend(int userId, Integer friendId) {
-        userStorage.addFriend(userId, friendId);
+        validateAndGetUser(userId);
+        validateAndGetUser(friendId);
+     userStorage.addFriend(userId, friendId);
     }
 
     public void removeFriend(int userId, Integer friendId) {

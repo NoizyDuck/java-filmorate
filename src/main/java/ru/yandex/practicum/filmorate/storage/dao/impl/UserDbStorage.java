@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -32,15 +33,15 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void addFriend(Integer userId, Integer friendId) {
-        boolean friendAccepted;
+        boolean addFriendAccepted;
         String sqlGetReversFriend = "SELECT * FROM FRIENDSHIP " +
                 "WHERE USER_ID = ? AND FRIEND_ID = ?";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sqlGetReversFriend, friendId, userId);
-        friendAccepted = rs.next();
+        addFriendAccepted = rs.next();
         String sqlSetFriend = "INSERT INTO FRIENDSHIP (USER_ID, FRIEND_ID, STATUS) " +
                 "VALUES (?, ?, ?)";
-        jdbcTemplate.update(sqlSetFriend, userId, friendId, friendAccepted);
-        if (friendAccepted) {
+        jdbcTemplate.update(sqlSetFriend, userId, friendId, addFriendAccepted);
+        if (addFriendAccepted) {
             String sqlSetStatus = "UPDATE FRIENDSHIP SET STATUS = true " +
                     "WHERE USER_ID = ? AND FRIEND_ID = ?";
             jdbcTemplate.update(sqlSetStatus, friendId, userId);
@@ -96,7 +97,7 @@ public class UserDbStorage implements UserStorage {
         try {
             user = jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeUser(rs), id);
         } catch (EmptyResultDataAccessException e) {
-            throw new NotFoundException("User " + id + " not found");
+            throw new ObjectNotFoundException("User " + id + " not found");
         }
         return user;
     }
@@ -109,6 +110,11 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public void deleteFriend(Integer userId, Integer friendId) {
+        String sqlQuery = "DELETE FROM FRIENDSHIP WHERE USER_ID = ? AND FRIEND_ID = ?";
+        jdbcTemplate.update(sqlQuery, userId, friendId);
+        String sqlSetStatus = "UPDATE FRIENDSHIP SET STATUS = false " +
+                "WHERE USER_ID = ? AND FRIEND_ID = ?";
+        jdbcTemplate.update(sqlSetStatus, friendId, userId);
     }
 
     private User makeUser(ResultSet rs) throws SQLException {

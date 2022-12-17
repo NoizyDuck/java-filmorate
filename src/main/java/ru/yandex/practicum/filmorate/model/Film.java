@@ -17,7 +17,7 @@ import java.util.Set;
 @Getter
 @Setter
 @AllArgsConstructor
-//@NoArgsConstructor
+@NoArgsConstructor
 @Valid
 public class Film {
     private int id;
@@ -30,7 +30,7 @@ public class Film {
     @NotNull(message = "Release date should be not empty")
     private LocalDate releaseDate;
     @Positive(message = "Duration should be positive")
-    private int duration;
+    private Integer duration;
     private int rate;
     @NotNull
     private Mpa mpa;

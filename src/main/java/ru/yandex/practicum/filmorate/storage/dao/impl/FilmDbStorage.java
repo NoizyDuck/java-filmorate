@@ -9,6 +9,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
@@ -63,7 +64,7 @@ public class FilmDbStorage implements FilmStorage {
                 rs.getString("DESCRIPTION"),
                 Objects.requireNonNull(rs.getDate("RELEASE_DATE")).toLocalDate(),
                 rs.getInt("DURATION"),
-                rs.getInt("RATING"),
+                rs.getInt("RATE"),
                 rs.getInt("RATING_ID"),
                 new Mpa( rs.getInt("RATING_MPA.RATING_ID"),
                         rs.getString("RATING_MPA.MPA_NAME"),
@@ -137,7 +138,7 @@ public class FilmDbStorage implements FilmStorage {
         try {
             film = jdbcTemplate.queryForObject(sqlQuery, (rs, rowNum) -> makeFilm(rs), filmId);
         } catch (EmptyResultDataAccessException exception) {
-            throw new NotFoundException(String.format("Film " + filmId + " not found"));
+            throw new ObjectNotFoundException(String.format("Film " + filmId + " not found"));
         }
         return film;
     }
