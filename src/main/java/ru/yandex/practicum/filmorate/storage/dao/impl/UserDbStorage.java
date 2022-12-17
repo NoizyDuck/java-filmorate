@@ -12,7 +12,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -81,19 +80,6 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User getUserById(long id) {
-//        SqlRowSet userRows = jdbcTemplate.queryForRowSet("SELECT USER_ID, EMAIL, LOGIN, BIRTHDAY, USER_NAME FROM USERS WHERE USER_ID = ?", id);
-//        if (userRows.next()) {
-//            User user = new User(
-//                    userRows.getInt("USER_ID"),
-//                    userRows.getString("EMAIL"),
-//                    userRows.getString("LOGIN"),
-//                    userRows.getDate("BIRTHDAY"),
-//                    userRows.getString("USER_NAME"));
-//            return user;
-//        } else {
-//            return null;
-//        }
-//    }
         final String sqlQuery = "SELECT USER_ID, EMAIL, LOGIN, BIRTHDAY, USER_NAME FROM USERS WHERE USER_ID = ?";
         User user;
         try {
@@ -103,11 +89,6 @@ public class UserDbStorage implements UserStorage {
         }
         return user;
     }
-//@Override
-//public User getUserById(long id) {
-//    final String sqlQuery = "SELECT USER_ID, EMAIL, LOGIN, BIRTHDAY, USER_NAME FROM USERS WHERE USER_ID = ?";
-//    return jdbcTemplate.queryForObject(sqlQuery,(rs, rowNum) -> makeUser(rs), id);
-//}
 
 
     @Override

@@ -36,7 +36,7 @@ public class MpaDBStorage implements MpaStorage {
         try {
             mpa = jdbcTemplate.queryForObject(sqlQuery, this::makeMpa, mpaId);
         } catch (EmptyResultDataAccessException e) {
-            throw new ObjectNotFoundException(String.format("Mpa ", + mpaId + " not found"));
+            throw new ObjectNotFoundException(String.format("Mpa " + mpaId + " not found"));
         }
         return mpa;
     }

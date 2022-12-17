@@ -5,6 +5,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
@@ -49,7 +50,7 @@ public class GenreDbStorage implements GenreStorage {
     @Override
     public void addFilmGenres(int filmId, Collection<Genre> genres) {
         for (Genre genre : genres) {
-            String sqlQuery = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?)";
+            String sqlQuery = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?) ON CONFLICT DO NOTHING ";
             jdbcTemplate.update(sqlQuery, filmId, genre.getId());
         }
     }

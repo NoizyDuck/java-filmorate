@@ -8,7 +8,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
@@ -17,7 +16,6 @@ import ru.yandex.practicum.filmorate.service.GenreService;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,7 +45,7 @@ public class FilmDbStorage implements FilmStorage {
             prepareStatement.setDate(3, Date.valueOf(film.getReleaseDate()));
             prepareStatement.setLong(4, film.getDuration());
             prepareStatement.setInt(5, film.getRate());
-            prepareStatement.setInt(6, Math.toIntExact(film.getMpa().getId()));
+            prepareStatement.setInt(6, film.getMpa().getId());
             return prepareStatement;
         }, keyHolder);
         int id = Objects.requireNonNull(keyHolder.getKey()).intValue();
@@ -66,7 +64,7 @@ public class FilmDbStorage implements FilmStorage {
 
     private Film makeFilm(ResultSet resultSet) throws SQLException {
         int filmId = resultSet.getInt("FILM_ID");
-        Film film = new Film(
+        return new Film(
                 filmId,
                 resultSet.getString("FILMS.FILM_NAME"),
                 resultSet.getString("FILMS.DESCRIPTION"),
@@ -79,7 +77,6 @@ public class FilmDbStorage implements FilmStorage {
                 (List<Genre>) genreService.getFilmGenres(filmId),
                 getFilmLikes(filmId)
         );
-        return film;
     }
 
     private List getFilmLikes(int filmId) {
@@ -105,16 +102,19 @@ public class FilmDbStorage implements FilmStorage {
     public Film updateFilm(Film film) {
         String sqlQueryDel = "DELETE FROM FILM_GENRE WHERE FILM_ID = ?";
         jdbcTemplate.update(sqlQueryDel, film.getId());
+
         String sqlQuery = "UPDATE FILMS " +
                 "SET FILM_NAME = ?, DESCRIPTION = ?, RELEASE_DATE = ?, DURATION = ?, RATE = ? , RATING_ID = ? " +
                 "WHERE FILM_ID = ?";
-        jdbcTemplate.update(sqlQuery,film.getName(),
+        jdbcTemplate.update(sqlQuery,
+                film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
                 film.getRate(),
                 film.getMpa().getId(),
                 film.getId());
+
         genreService.deleteFilmGenres(film.getId());
         if (!film.getGenres().isEmpty()) {
             genreService.addFilmGenres(film.getId(), film.getGenres());
