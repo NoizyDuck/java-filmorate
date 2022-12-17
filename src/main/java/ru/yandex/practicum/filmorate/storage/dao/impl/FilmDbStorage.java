@@ -35,46 +35,53 @@ public class FilmDbStorage implements FilmStorage {
 
     @Override
     public Film createFilm(Film film) {
-        String sqlQuery = "insert into FILMS (FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATE, RATING_ID) values (?,?,?,?,?,?)";
+        String sqlQuery = "INSERT INTO FILMS " +
+                "(FILM_NAME, DESCRIPTION, RELEASE_DATE, DURATION, RATE, RATING_ID) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
-            PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"FILM_ID"});
-            stmt.setString(1, film.getName());
-            stmt.setString(2, film.getDescription());
-            final LocalDate releaseDate = film.getReleaseDate();
-            if (releaseDate == null) {
-                stmt.setNull(3, Types.DATE);
-            } else {
-                stmt.setDate(3, Date.valueOf(releaseDate));
-            }
-            stmt.setInt(4, film.getDuration());
-            stmt.setInt(5, film.getRate());
-            stmt.setInt(6, film.getMpa().getId());
-            return stmt;
+            PreparedStatement prepareStatement = connection.prepareStatement(sqlQuery, Statement.RETURN_GENERATED_KEYS);
+            prepareStatement.setString(1, film.getName());
+            prepareStatement.setString(2, film.getDescription());
+            prepareStatement.setDate(3, Date.valueOf(film.getReleaseDate()));
+            prepareStatement.setLong(4, film.getDuration());
+            prepareStatement.setInt(5, film.getRate());
+            prepareStatement.setInt(6, Math.toIntExact(film.getMpa().getId()));
+            return prepareStatement;
         }, keyHolder);
-        film.setId(Objects.requireNonNull(keyHolder.getKey()).intValue());
+        int id = Objects.requireNonNull(keyHolder.getKey()).intValue();
+        film.setId(id);
+
+        if (!film.getGenres().isEmpty()) {
+            genreService.addFilmGenres(film.getId(), film.getGenres());
+        }
+        if (film.getLikes() != null) {
+            for (Integer userId : film.getLikes()) {
+                addLike(film.getId(), userId);
+            }
+        }
+        return getFilmById(id);
+    }
+
+    private Film makeFilm(ResultSet resultSet) throws SQLException {
+        int filmId = resultSet.getInt("FILM_ID");
+        Film film = new Film(
+                filmId,
+                resultSet.getString("FILMS.FILM_NAME"),
+                resultSet.getString("FILMS.DESCRIPTION"),
+                Objects.requireNonNull(resultSet.getDate("FILMS.RELEASE_DATE")).toLocalDate(),
+                resultSet.getInt("FILMS.DURATION"),
+                resultSet.getInt("FILMS.RATE"),
+                new Mpa(resultSet.getInt("RATING_MPA.RATING_ID"),
+                        resultSet.getString("RATING_MPA.MPA_NAME"),
+                        resultSet.getString("RATING_MPA.DESCRIPTION")),
+                (List<Genre>) genreService.getFilmGenres(filmId),
+                getFilmLikes(filmId)
+        );
         return film;
     }
 
-    private Film makeFilm(ResultSet rs) throws SQLException {
-        int filmId = rs.getInt("FILM_ID");
-        return new Film(
-                filmId,
-                rs.getString("FILM_NAME"),
-                rs.getString("DESCRIPTION"),
-                Objects.requireNonNull(rs.getDate("RELEASE_DATE")).toLocalDate(),
-                rs.getInt("DURATION"),
-                rs.getInt("RATE"),
-                rs.getInt("RATING_ID"),
-                new Mpa( rs.getInt("RATING_MPA.RATING_ID"),
-                        rs.getString("RATING_MPA.MPA_NAME"),
-                        rs.getString("RATING_MPA.DESCRIPTION")),
-                (List<Genre>) genreService.getFilmGenres(filmId),
-        getFilmLikes(filmId));
-
-    }
-
-    private Object getFilmLikes(int filmId) {
+    private List getFilmLikes(int filmId) {
         String sqlQuery = "SELECT USER_ID FROM LIKES WHERE FILM_ID = ?";
         return jdbcTemplate.queryForList(sqlQuery, Integer.class, filmId);
     }
@@ -120,13 +127,19 @@ public class FilmDbStorage implements FilmStorage {
         return getFilmById(film.getId());
     }
 
-    private void addLike(int filmId, Integer userId) {
+    public void addLike(int filmId, long userId) {
         String sqlQuery = "SELECT * FROM LIKES WHERE USER_ID = ? AND FILM_ID = ?";
         SqlRowSet existLike = jdbcTemplate.queryForRowSet(sqlQuery, userId, filmId);
         if (!existLike.next()) {
             String setLike = "INSERT INTO LIKES (USER_ID, FILM_ID) VALUES  (?, ?) ";
             jdbcTemplate.update(setLike, userId, filmId);
         }
+    }
+
+    @Override
+    public void deleteLike(int filmId, long userId) {
+        String deleteLike = "DELETE FROM LIKES WHERE FILM_ID = ? AND USER_ID = ?";
+        jdbcTemplate.update(deleteLike, filmId, userId);
     }
 
     @Override

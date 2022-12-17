@@ -15,7 +15,7 @@ import java.util.List;
 @Service
 @Slf4j
 public class FilmService {
-    FilmComparator filmComparator = new FilmComparator();
+   // FilmComparator filmComparator = new FilmComparator();
     final FilmStorage filmStorage;
     final UserStorage userStorage;
 
@@ -25,27 +25,37 @@ public class FilmService {
         this.userStorage = userStorage;
     }
 
-    public void addLike(int filmId, int userId) {
+    public void addLike(int filmId, long userId) {
         Film film = filmStorage.getFilmById(filmId);
-        if (film == null) {
-            throw new ObjectNotFoundException("Film not found");
-        }
-        film.setLikeCount(film.getLikeCount() + 1);
-        film.getLikes().add(userId);
+        User user = userStorage.getUserById(userId);
+        filmStorage.addLike(film.getId(), user.getId());
     }
 
-    public void deleteLike(int filmId, int userId) {
-        Film film = filmStorage.getFilmById(filmId);
-        if (film == null) {
-            throw new ObjectNotFoundException("Film not found");
-        }
-        User user = userStorage.getUserById(userId);
-        if (user == null) {
-            throw new ObjectNotFoundException("User not found");
-        }
-        film.setLikeCount(film.getLikeCount() - 1);
-        film.getLikes().remove(userId);
-    }
+//    public void addLike(int filmId, int userId) {
+//        Film film = filmStorage.getFilmById(filmId);
+//        if (film == null) {
+//            throw new ObjectNotFoundException("Film not found");
+//        }
+//        film.setLikeCount(film.getLikeCount() + 1);
+//        film.getLikes().add(userId);
+//    }
+public void deleteLike(int filmId, int userId) {
+    Film film = filmStorage.getFilmById(filmId);
+    User user = userStorage.getUserById(userId);
+    filmStorage.deleteLike(film.getId(), user.getId());
+}
+//    public void deleteLike(int filmId, int userId) {
+//        Film film = filmStorage.getFilmById(filmId);
+//        if (film == null) {
+//            throw new ObjectNotFoundException("Film not found");
+//        }
+//        User user = userStorage.getUserById(userId);
+//        if (user == null) {
+//            throw new ObjectNotFoundException("User not found");
+//        }
+//        film.setLikeCount(film.getLikeCount() - 1);
+//        film.getLikes().remove(userId);
+//    }
     public List<Film> getTopFilms(int count) {
         return filmStorage.getTopFilms(count);
     }
