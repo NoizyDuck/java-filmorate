@@ -29,6 +29,4 @@ public class User {
     LocalDate birthday;
     List<Integer> friends = new ArrayList<>();
 
-
-
 }
