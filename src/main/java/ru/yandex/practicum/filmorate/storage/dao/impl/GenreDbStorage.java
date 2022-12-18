@@ -12,8 +12,12 @@ import ru.yandex.practicum.filmorate.storage.GenreStorage;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 @RequiredArgsConstructor
+
 
 public class GenreDbStorage implements GenreStorage {
     private final JdbcTemplate jdbcTemplate;
@@ -23,6 +27,7 @@ public class GenreDbStorage implements GenreStorage {
         String sqlQuery = "SELECT GENRE_ID, GENRE_NAME FROM GENRES ORDER BY GENRE_ID";
         return jdbcTemplate.query(sqlQuery, this::makeGenre);
     }
+
     @Override
     public Collection<Genre> getGenresByFilmId(int filmId) {
         String sqlQuery = "SELECT GENRES.GENRE_ID, GENRES.GENRE_NAME FROM GENRES " +
@@ -49,8 +54,9 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public void addFilmGenres(int filmId, Collection<Genre> genres) {
-        for (Genre genre : genres) {
-            String sqlQuery = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?) ON CONFLICT DO NOTHING ";
+        List<Genre> distGenres = genres.stream().distinct().collect(Collectors.toList());
+        for (Genre genre : distGenres) {
+            String sqlQuery = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?)";
             jdbcTemplate.update(sqlQuery, filmId, genre.getId());
         }
     }
